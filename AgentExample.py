@@ -32,7 +32,7 @@ if openai_api_key.startswith('sk-'):
             with st.spinner("Processing..."):
                 try:
                     llm = ChatOpenAI(api_key=openai_api_key,temperature=0.4,model='gpt-3.5-turbo-1106')
-                    prompt_template = ChatPromptTemplate.from_template("""
+                    prompt_template = ChatPromptTemplate("""
                             You are a helpful assistant that can perform various string operations.
                             You have access to the following tools:
                             - reverse: Reverses the input string.
