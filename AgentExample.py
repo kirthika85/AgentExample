@@ -1,5 +1,4 @@
 import streamlit as st
-import openai
 
 st.title("LLM String Operations Agent")
 openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
@@ -30,28 +29,27 @@ else:
         if user_input:
             with st.spinner("Processing..."):
                 try:
-                    # Initialize the OpenAI API client
-                    openai.api_key = openai_api_key
+                    # Parse the command and text from the user input
+                    parts = user_input.split(maxsplit=1)
+                    if len(parts) < 2:
+                        st.error("Please enter both a command and a string.")
+                        raise ValueError("Incomplete input")
 
-                    # Define the prompt
-                    prompt = f"You are a helpful assistant that can perform various string operations.\n" \
-                             f"You have access to the following tools:\n" \
-                             f"- reverse: Reverses the input string.\n" \
-                             f"- uppercase: Converts the input string to uppercase.\n" \
-                             f"- length: Returns the length of the input string.\n" \
-                             f"The user will provide you with a command, and you will use the appropriate tool to perform the operation.\n" \
-                             f"Command: {user_input}\n"
+                    command = parts[0]
+                    text = parts[1]
 
-                    # Generate response using OpenAI API
-                    response = openai.Completion.create(
-                        engine="text-davinci-003",
-                        prompt=prompt,
-                        max_tokens=150
-                    )
+                    if command not in tools:
+                        st.error("Invalid command. Use 'reverse', 'uppercase', or 'length'.")
+                        raise ValueError("Invalid command")
 
+                    # Execute the tool directly
+                    result = tools[command](text)
+                    
                     st.write("### Result")
-                    st.write(response.choices[0].text.strip())
+                    st.write(result)
 
+                except ValueError:
+                    pass  # Error already handled by st.error
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
         else:
