@@ -57,20 +57,21 @@ else:
                     # Initialize the OpenAI LLM
                     llm = ChatOpenAI(api_key=openai_api_key, temperature=0.4, model='gpt-3.5-turbo-1106')
 
-                    # Run the agent with the user input
+                    # Initialize the agent with the tools and the prompt template
                     agent = initialize_agent(
                         llm=llm,
                         tools=tools,
                         prompt=chat_prompt_template
                     )
 
-                    # Format input data as expected by LangChain
+                    # Format the input data correctly
                     input_data = {"input": user_input}
 
+                    # Run the agent with the formatted input data
                     response = agent(input_data)
                     
                     st.write("### Result")
-                    st.write(response['output'])  # Access the output from the response
+                    st.write(response['output'])  # Display the output from the response
 
                 except KeyError as e:
                     st.error(f"An error occurred: {e}")
