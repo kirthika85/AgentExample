@@ -33,6 +33,7 @@ else:
         if user_input:
             with st.spinner("Processing..."):
                 try:
+                    # Parse the command and text from the user input
                     parts = user_input.split(maxsplit=1)
                     command = parts[0] if len(parts) > 0 else ""
                     text = parts[1] if len(parts) > 1 else ""
@@ -41,27 +42,26 @@ else:
                     if not command or not text:
                         st.error("Please enter both a command and a string.")
                         raise ValueError("Incomplete input")
-                        
+
                     # Define the human message prompt template
                     human_message_template = HumanMessagePromptTemplate(
                         prompt=PromptTemplate(
-                            input_variables=["command", "text"],
+                            input_variables=["input"],
                             template="""
                             You are a helpful assistant that can perform various string operations.
                             You have access to the following tools:
                             - reverse: Reverses the input string.
                             - uppercase: Converts the input string to uppercase.
                             - length: Returns the length of the input string.
-                            The user will provide you with a command, and you will use the appropriate tool to perform the operation.
-                            Command: {{command}}
-                            Text: {{text}}
+                            The user will provide you with a command and a string, and you will use the appropriate tool to perform the operation.
+                            Input: {{input}}
                             """
                         )
                     )
 
                     # Create the chat prompt template
                     chat_prompt_template = ChatPromptTemplate(
-                        input_variables=["command", "text"],
+                        input_variables=["input"],
                         messages=[human_message_template]
                     )
                     
@@ -75,12 +75,17 @@ else:
                         prompt=chat_prompt_template
                     )
 
+                    # Combine command and text into a single input for the agent
+                    input_text = f"{command} {text}"
                     # Run the agent with the user input
-                    response = agent({"command": command, "text": text})
+                    response = agent({"input": input_text})
                     
                     st.write("### Result")
                     st.write(response['output'])  # Access the output from the response
 
+                except ValueError:
+                    # Already handled by st.error
+                    pass
                 except KeyError as e:
                     st.error(f"An error occurred: {e}")
                 except Exception as e:
