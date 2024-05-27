@@ -53,7 +53,7 @@ if openai_api_key.startswith('sk-'):
             with st.spinner("Processing..."):
                 try:
                     # Run the agent with the user input
-                    response = agent_executor.invoke({"input": user_input})
+                    response = agent({"input": user_input})
                     st.write("### Result")
                     st.write(response)
                 except KeyError as e:
