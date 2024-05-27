@@ -7,6 +7,7 @@ from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, Pr
 st.title("LLM String Operations Agent")
 openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
 
+# Define string operation functions
 def reverse_string(text: str) -> str:
     return text[::-1]
 
@@ -16,15 +17,17 @@ def to_uppercase(text: str) -> str:
 def get_length(text: str) -> str:
     return str(len(text))
 
+# Define tools for string operations
 tools = [
     Tool(name="reverse", func=reverse_string, description="Reverses the input string."),
     Tool(name="uppercase", func=to_uppercase, description="Converts the input string to uppercase."),
     Tool(name="length", func=get_length, description="Returns the length of the input string.")
 ]
 
+# Check if API key is valid
 if not openai_api_key.startswith('sk-'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
-if openai_api_key.startswith('sk-'):
+else:
     user_input = st.text_input("Enter your command (reverse, uppercase, length) followed by the string:")
     if st.button("Execute"):
         if user_input:
@@ -63,10 +66,10 @@ if openai_api_key.startswith('sk-'):
                     )
 
                     # Run the agent with the user input
-                    response = agent({"command": user_input})
+                    response = agent({"input": user_input})
                     
                     st.write("### Result")
-                    st.write(response['output'])
+                    st.write(response['output'])  # Access the output from the response
 
                 except KeyError as e:
                     st.error(f"An error occurred: {e}")
