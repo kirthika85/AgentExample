@@ -36,7 +36,7 @@ else:
                     # Define the human message prompt template
                     human_message_template = HumanMessagePromptTemplate(
                         prompt=PromptTemplate(
-                            input_variables=["input"],
+                            input_variables=["command", "text"],
                             template="""
                             You are a helpful assistant that can perform various string operations.
                             You have access to the following tools:
@@ -44,14 +44,15 @@ else:
                             - uppercase: Converts the input string to uppercase.
                             - length: Returns the length of the input string.
                             The user will provide you with a command, and you will use the appropriate tool to perform the operation.
-                            Command: {{input}}
+                            Command: {{command}}
+                            Text: {{text}}
                             """
                         )
                     )
 
                     # Create the chat prompt template
                     chat_prompt_template = ChatPromptTemplate(
-                        input_variables=["input"],
+                        input_variables=["command", "text"],
                         messages=[human_message_template]
                     )
                     
@@ -66,7 +67,7 @@ else:
                     )
 
                     # Run the agent with the user input
-                    response = agent({"input": user_input})
+                    response = agent({"command": command, "text": text})
                     
                     st.write("### Result")
                     st.write(response['output'])  # Access the output from the response
