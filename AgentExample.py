@@ -41,8 +41,8 @@ human_message_template = HumanMessagePromptTemplate(
         Text: {{text}}
         """
     )
-   )
-  
+)
+
 # Create the chat prompt template
 chat_prompt_template = ChatPromptTemplate(
     input_variables=["command", "text"],
@@ -72,7 +72,7 @@ else:
                         raise ValueError("Invalid command")
 
                     # Initialize the OpenAI LLM
-                    llm = ChatOpenAI(api_key=openai_api_key, temperature=0.4, model='gpt-3.5-turbo-1106')
+                    llm = ChatOpenAI(api_key=openai_api_key, temperature=0.4, model='gpt-3.5-turbo')
 
                     # Initialize the agent with the tools and the prompt template
                     agent = initialize_agent(
@@ -85,13 +85,12 @@ else:
 
                     # Format the input data correctly
                     input_data = {"command": command, "text": text}
-                    st.write(input_data)
 
                     # Run the agent with the formatted input data
                     response = agent(input_data)
-                    
+
                     st.write("### Result")
-                    st.write(response['output'])  # Display the output from the response
+                    st.write(response)  # Display the output from the response
 
                 except ValueError:
                     pass  # Error already handled by st.error
