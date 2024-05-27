@@ -35,21 +35,20 @@ if openai_api_key.startswith('sk-'):
                     prompt_template = ChatPromptTemplate(
                             input_variables=["input"],
                             messages=[
-                                    HumanMessagePromptTemplate(
-                                        prompt=PromptTemplate(
-                                            input_variables=["input"],
-                                            template="""
-                                                You are a helpful assistant that can perform various string operations.
-                                                You have access to the following tools:
-                                                    - reverse: Reverses the input string.
-                                                    - uppercase: Converts the input string to uppercase.
-                                                    - length: Returns the length of the input string.
-
-                                                    The user will provide you with a command, and you will use the appropriate tool to perform the operation.
-                                                    Command: {{input}}
-                                                    """
-                                        )
-                                    )    
+                                HumanMessagePromptTemplate(
+                                    prompt=PromptTemplate(
+                                        input_variables=["input"],
+                                        template="""
+                                        You are a helpful assistant that can perform various string operations.
+                                        You have access to the following tools:
+                                        - reverse: Reverses the input string.
+                                        - uppercase: Converts the input string to uppercase.
+                                        - length: Returns the length of the input string.
+                                        The user will provide you with a command, and you will use the appropriate tool to perform the operation.
+                                        Command: {{input}}
+                                       """
+                                    )
+                                )
                             ]
                     )
                     st.write(prompt_template)
