@@ -1,8 +1,4 @@
 import streamlit as st
-from langchain.tools import Tool
-from langchain.agents import initialize_agent
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, PromptTemplate
 
 st.title("LLM String Operations Agent")
 openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
@@ -18,11 +14,11 @@ def get_length(text: str) -> str:
     return str(len(text))
 
 # Define tools for string operations
-tools = [
-    Tool(name="reverse", func=reverse_string, description="Reverses the input string."),
-    Tool(name="uppercase", func=to_uppercase, description="Converts the input string to uppercase."),
-    Tool(name="length", func=get_length, description="Returns the length of the input string.")
-]
+tools = {
+    "reverse": reverse_string,
+    "uppercase": to_uppercase,
+    "length": get_length
+}
 
 # Check if API key is valid
 if not openai_api_key.startswith('sk-'):
@@ -35,59 +31,25 @@ else:
                 try:
                     # Parse the command and text from the user input
                     parts = user_input.split(maxsplit=1)
-                    command = parts[0] if len(parts) > 0 else ""
-                    text = parts[1] if len(parts) > 1 else ""
-
-                    # Ensure both command and text are provided
-                    if not command or not text:
+                    if len(parts) < 2:
                         st.error("Please enter both a command and a string.")
                         raise ValueError("Incomplete input")
 
-                    # Define the human message prompt template
-                    human_message_template = HumanMessagePromptTemplate(
-                        prompt=PromptTemplate(
-                            input_variables=["input"],
-                            template="""
-                            You are a helpful assistant that can perform various string operations.
-                            You have access to the following tools:
-                            - reverse: Reverses the input string.
-                            - uppercase: Converts the input string to uppercase.
-                            - length: Returns the length of the input string.
-                            The user will provide you with a command and a string, and you will use the appropriate tool to perform the operation.
-                            Input: {{input}}
-                            """
-                        )
-                    )
+                    command = parts[0]
+                    text = parts[1]
 
-                    # Create the chat prompt template
-                    chat_prompt_template = ChatPromptTemplate(
-                        input_variables=["input"],
-                        messages=[human_message_template]
-                    )
-                    
-                    # Initialize the OpenAI LLM
-                    llm = ChatOpenAI(api_key=openai_api_key, temperature=0.4, model='gpt-3.5-turbo-1106')
-                    
-                    # Initialize the agent with the tools and the prompt template
-                    agent = initialize_agent(
-                        llm=llm,
-                        tools=tools,
-                        prompt=chat_prompt_template
-                    )
+                    if command not in tools:
+                        st.error("Invalid command. Use 'reverse', 'uppercase', or 'length'.")
+                        raise ValueError("Invalid command")
 
-                    # Combine command and text into a single input for the agent
-                    input_text = f"{command} {text}"
-                    # Run the agent with the user input
-                    response = agent({"input": input_text})
+                    # Execute the tool directly
+                    result = tools[command](text)
                     
                     st.write("### Result")
-                    st.write(response['output'])  # Access the output from the response
+                    st.write(result)
 
                 except ValueError:
-                    # Already handled by st.error
-                    pass
-                except KeyError as e:
-                    st.error(f"An error occurred: {e}")
+                    pass  # Error already handled by st.error
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
         else:
