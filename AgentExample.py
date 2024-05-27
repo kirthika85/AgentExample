@@ -31,25 +31,28 @@ if openai_api_key.startswith('sk-'):
         if user_input:
             with st.spinner("Processing..."):
                 try:
+                    human_message_template = HumanMessagePromptTemplate(
+                            prompt=PromptTemplate(
+                                input_variables=["input"],
+                                template="""
+                                You are a helpful assistant that can perform various string operations.
+                                You have access to the following tools:
+                                - reverse: Reverses the input string.
+                                - uppercase: Converts the input string to uppercase.
+                                - length: Returns the length of the input string.
+                                The user will provide you with a command, and you will use the appropriate tool to perform the operation.
+                                Command: {{input}}
+                                """
+                            )
+                        )
+
+                    # Use HumanMessagePromptTemplate in ChatPromptTemplate
                     prompt_template = ChatPromptTemplate(
                         input_variables=["input"],
-                        messages=[
-                            HumanMessagePromptTemplate(
-                                prompt=PromptTemplate(
-                                    input_variables=["input"],
-                                    template="""
-                                    You are a helpful assistant that can perform various string operations.
-                                    You have access to the following tools:
-                                    - reverse: Reverses the input string.
-                                    - uppercase: Converts the input string to uppercase.
-                                    - length: Returns the length of the input string.
-                                    The user will provide you with a command, and you will use the appropriate tool to perform the operation.
-                                    Command: {{input}}
-                                    """
-                                )
-                            )
-                        ]
+                        messages=[human_message_template]
                     )
+                    
+                    st.write(prompt_template)
                     llm = ChatOpenAI(api_key=openai_api_key,temperature=0.4,model='gpt-3.5-turbo-1106')
                     st.write(prompt_template)
                     agent = initialize_agent(
