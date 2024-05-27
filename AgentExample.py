@@ -33,6 +33,15 @@ else:
         if user_input:
             with st.spinner("Processing..."):
                 try:
+                    parts = user_input.split(maxsplit=1)
+                    command = parts[0] if len(parts) > 0 else ""
+                    text = parts[1] if len(parts) > 1 else ""
+
+                    # Ensure both command and text are provided
+                    if not command or not text:
+                        st.error("Please enter both a command and a string.")
+                        raise ValueError("Incomplete input")
+                        
                     # Define the human message prompt template
                     human_message_template = HumanMessagePromptTemplate(
                         prompt=PromptTemplate(
