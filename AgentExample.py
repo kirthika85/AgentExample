@@ -33,7 +33,7 @@ if openai_api_key.startswith('sk-'):
                     # Define the human message prompt template
                     human_message_template = HumanMessagePromptTemplate(
                         prompt=PromptTemplate(
-                            input_variables=["command"],
+                            input_variables=["input"],
                             template="""
                             You are a helpful assistant that can perform various string operations.
                             You have access to the following tools:
@@ -41,14 +41,14 @@ if openai_api_key.startswith('sk-'):
                             - uppercase: Converts the input string to uppercase.
                             - length: Returns the length of the input string.
                             The user will provide you with a command, and you will use the appropriate tool to perform the operation.
-                            Command: {{command}}
+                            Command: {{input}}
                             """
                         )
                     )
 
                     # Create the chat prompt template
                     chat_prompt_template = ChatPromptTemplate(
-                        input_variables=["command"],
+                        input_variables=["input"],
                         messages=[human_message_template]
                     )
                     
