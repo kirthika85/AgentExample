@@ -46,9 +46,7 @@ agent = initialize_agent(
 
 if not openai_api_key.startswith('sk-'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
-else:
-    # Update the LLM with the provided API key
-    llm.api_key = openai_api_key
+if openai_api_key.startswith('sk-'):
     user_input = st.text_input("Enter your command (reverse, uppercase, length) followed by the string:")
     if st.button("Execute"):
         if user_input:
