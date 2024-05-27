@@ -36,7 +36,7 @@ Command: {input}
 """)
 
 # Initialize the language model
-llm = ChatOpenAI(model="gpt-3.5-turbo", api_key=openai_api_key)
+llm = ChatOpenAI(api_key=openai_api_key,temperature=0.4,model='gpt-3.5-turbo-1106')
 
 agent = initialize_agent(
     llm=llm,
