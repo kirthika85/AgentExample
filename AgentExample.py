@@ -45,8 +45,6 @@ chat_prompt_template = ChatPromptTemplate(
     messages=[human_message_template]
 )
 
-
-
 # Check if API key is valid
 if not openai_api_key.startswith('sk-'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
@@ -56,14 +54,20 @@ else:
         if user_input:
             with st.spinner("Processing..."):
                 try:
+                    # Initialize the OpenAI LLM
                     llm = ChatOpenAI(api_key=openai_api_key, temperature=0.4, model='gpt-3.5-turbo-1106')
+
                     # Run the agent with the user input
                     agent = initialize_agent(
-                            llm=llm,
-                            tools=tools,
-                            prompt=chat_prompt_template
+                        llm=llm,
+                        tools=tools,
+                        prompt=chat_prompt_template
                     )
-                    response = agent({"input": user_input})
+
+                    # Format input data as expected by LangChain
+                    input_data = {"input": user_input}
+
+                    response = agent(input_data)
                     
                     st.write("### Result")
                     st.write(response['output'])  # Access the output from the response
