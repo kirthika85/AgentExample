@@ -23,23 +23,21 @@ tools = [
     Tool(name="length", func=get_length, description="Returns the length of the input string.")
 ]
 
-# Define the agent's prompt
-prompt_template = ChatPromptTemplate.from_template("""
-You are a helpful assistant that can perform various string operations.
-You have access to the following tools:
-- reverse: Reverses the input string.
-- uppercase: Converts the input string to uppercase.
-- length: Returns the length of the input string.
-The user will provide you with a command, and you will use the appropriate tool to perform the operation.
-Command: {input}
-""")
-st.write(prompt_template)
-
 if not openai_api_key.startswith('sk-'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
 if openai_api_key.startswith('sk-'):
     user_input = st.text_input("Enter your command (reverse, uppercase, length) followed by the string:")
     llm = ChatOpenAI(api_key=openai_api_key,temperature=0.4,model='gpt-3.5-turbo-1106')
+    prompt_template = ChatPromptTemplate.from_template("""
+            You are a helpful assistant that can perform various string operations.
+            You have access to the following tools:
+            - reverse: Reverses the input string.
+            - uppercase: Converts the input string to uppercase.
+            - length: Returns the length of the input string.
+            The user will provide you with a command, and you will use the appropriate tool to perform the operation.
+            Command: {input}
+            """)
+    st.write(prompt_template)
     agent = initialize_agent(
         llm=llm,
         tools=tools,
