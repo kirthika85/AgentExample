@@ -3,6 +3,15 @@ from langchain.agents import Tool, AgentExecutor
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 
+def reverse_string(text: str) -> str:
+    return text[::-1]
+
+def to_uppercase(text: str) -> str:
+    return text.upper()
+
+def get_length(text: str) -> str:
+    return str(len(text))
+
 tools = [
     Tool(name="reverse", func=reverse_string, description="Reverses the input string."),
     Tool(name="uppercase", func=to_uppercase, description="Converts the input string to uppercase."),
