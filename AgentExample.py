@@ -30,10 +30,10 @@ You have access to the following tools:
 - reverse: Reverses the input string.
 - uppercase: Converts the input string to uppercase.
 - length: Returns the length of the input string.
-
 The user will provide you with a command, and you will use the appropriate tool to perform the operation.
 Command: {input}
 """)
+st.write(prompt_template)
 
 if not openai_api_key.startswith('sk-'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
