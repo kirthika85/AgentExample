@@ -53,6 +53,8 @@ else:
                     response = agent_executor.invoke({"input": user_input})
                     st.write("### Result")
                     st.write(response)
+                except KeyError as e:
+                    st.error(f"An error occurred: {e}")
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
         else:
