@@ -4,6 +4,10 @@ from langchain.agents import initialize_agent
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 
+
+st.title("LLM String Operations Agent")
+openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
+
 def reverse_string(text: str) -> str:
     return text[::-1]
 
@@ -40,8 +44,6 @@ agent = initialize_agent(
     prompt=prompt_template
 )
 
-st.title("LLM String Operations Agent")
-openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
 if not openai_api_key.startswith('sk-'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
 else:
