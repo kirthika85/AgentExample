@@ -1,49 +1,50 @@
 import streamlit as st
-from langchain import OpenAI, AgentExecutor, Tool
+from langchain.agents import Tool, AgentExecutor
+from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 
-# Define string operations as tools
-def reverse_string(s):
-    return s[::-1]
+tools = [
+    Tool(name="reverse", func=reverse_string, description="Reverses the input string."),
+    Tool(name="uppercase", func=to_uppercase, description="Converts the input string to uppercase."),
+    Tool(name="length", func=get_length, description="Returns the length of the input string.")
+]
 
-def to_uppercase(s):
-    return s.upper()
+# Define the agent's prompt
+prompt_template = ChatPromptTemplate.from_template("""
+You are a helpful assistant that can perform various string operations.
+You have access to the following tools:
+- reverse: Reverses the input string.
+- uppercase: Converts the input string to uppercase.
+- length: Returns the length of the input string.
 
-def get_length(s):
-    return len(s)
+The user will provide you with a command, and you will use the appropriate tool to perform the operation.
+Command: {input}
+""")
 
-# Create Tool instances for each operation
-reverse_tool = Tool(name="reverse", func=reverse_string, description="Reverses a string")
-uppercase_tool = Tool(name="uppercase", func=to_uppercase, description="Converts a string to uppercase")
-length_tool = Tool(name="length", func=get_length, description="Returns the length of a string")
+# Initialize the language model
+llm = ChatOpenAI(model="gpt-3.5-turbo", api_key="YOUR_OPENAI_API_KEY")
 
-# Initialize OpenAI LLM
+# Create the agent executor
+agent_executor = AgentExecutor(llm=llm, tools=tools, prompt_template=prompt_template)
+
+st.title("LLM String Operations Agent")
 openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
-openai_llm = None
-if openai_api_key:
-    openai_llm = OpenAI(api_key=openai_api_key, model='gpt-3.5-turbo')
+if not openai_api_key.startswith('sk-'):
+    st.warning('Please enter your OpenAI API key!', icon='⚠')
+else:
+    # Update the LLM with the provided API key
+    llm.api_key = openai_api_key
+    user_input = st.text_input("Enter your command (reverse, uppercase, length) followed by the string:")
+    if st.button("Execute"):
+        if user_input:
+            with st.spinner("Processing..."):
+                try:
+                    # Run the agent with the user input
+                    response = agent_executor.invoke({"input": user_input})
+                    st.write("### Result")
+                    st.write(response)
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
+        else:
+            st.error("Please enter a command and a string.")
 
-tools = [reverse_tool, uppercase_tool, length_tool]
-
-# Define a simple function to handle input and call the appropriate tool
-def agent_respond(input_text, tools):
-    command, _, args = input_text.partition(' ')
-    for tool in tools:
-        if command == tool.name:
-            return tool.func(args)
-    return f"Unknown command: {command}"
-
-st.title("String Operations with LLM Agent")
-user_input = st.text_input("Enter your command:")
-
-if st.button("Submit"):
-    if openai_api_key and user_input:
-        try:
-            response = agent_respond(user_input, tools)
-            st.write(f"Result: {response}")
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-    elif not openai_api_key:
-        st.warning("Please enter your OpenAI API key.")
-    else:
-        st.warning("Please enter a command.")
