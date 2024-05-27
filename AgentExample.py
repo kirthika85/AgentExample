@@ -43,7 +43,7 @@ else:
                         raise ValueError("Invalid command")
 
                     # Execute the tool directly
-                    result = tools[command](text)
+                    result = tools[command](text)]
                     
                     st.write("### Result")
                     st.write(result)
