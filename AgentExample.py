@@ -40,7 +40,8 @@ if openai_api_key.startswith('sk-'):
                             - length: Returns the length of the input string.
                             The user will provide you with a command, and you will use the appropriate tool to perform the operation.
                             Command: {input}
-                            """)
+                            """,
+                            input_variables=["input"])
                     st.write(prompt_template)
                     agent = initialize_agent(
                             llm=llm,
