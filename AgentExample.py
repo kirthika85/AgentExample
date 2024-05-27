@@ -85,16 +85,17 @@ else:
 
                     # Format the input data correctly
                     input_data = {"command": command, "text": text}
-                    st.write(input_data)
+                    st.write(f"Input Data: {input_data}")
 
                     # Run the agent with the formatted input data
                     response = agent(input_data)
+                    st.write(f"Raw Response: {response}")
 
                     st.write("### Result")
-                    st.write(response)  # Display the output from the response
+                    st.write(response['output'])  # Display the output from the response
 
-                except ValueError:
-                    pass  # Error already handled by st.error
+                except ValueError as e:
+                    st.error(f"ValueError: {e}")
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
         else:
