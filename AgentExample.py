@@ -85,6 +85,7 @@ else:
 
                     # Format the input data correctly
                     input_data = {"command": command, "text": text}
+                    st.write(input_data)
 
                     # Run the agent with the formatted input data
                     response = agent(input_data)
