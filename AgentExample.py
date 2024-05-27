@@ -42,8 +42,7 @@ human_message_template = HumanMessagePromptTemplate(
         """
     )
    )
-  st.write(prompt)
-
+  
 # Create the chat prompt template
 chat_prompt_template = ChatPromptTemplate(
     input_variables=["command", "text"],
@@ -86,6 +85,7 @@ else:
 
                     # Format the input data correctly
                     input_data = {"command": command, "text": text}
+                    st.write(prompt)
                     st.write(input_data)
 
                     # Run the agent with the formatted input data
