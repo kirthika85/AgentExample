@@ -35,9 +35,6 @@ The user will provide you with a command, and you will use the appropriate tool 
 Command: {input}
 """)
 
-# Initialize the language model
-llm = ChatOpenAI(api_key=openai_api_key,temperature=0.4,model='gpt-3.5-turbo-1106')
-
 agent = initialize_agent(
     llm=llm,
     tools=tools,
@@ -48,6 +45,7 @@ if not openai_api_key.startswith('sk-'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
 if openai_api_key.startswith('sk-'):
     user_input = st.text_input("Enter your command (reverse, uppercase, length) followed by the string:")
+    llm = ChatOpenAI(api_key=openai_api_key,temperature=0.4,model='gpt-3.5-turbo-1106')
     if st.button("Execute"):
         if user_input:
             with st.spinner("Processing..."):
