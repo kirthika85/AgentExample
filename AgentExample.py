@@ -1,6 +1,6 @@
 import streamlit as st
 from langchain.tools import Tool
-from langchain.agents import AgentExecutor
+from langchain.agents import initialize_agent
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 
@@ -32,10 +32,13 @@ Command: {input}
 """)
 
 # Initialize the language model
-llm = ChatOpenAI(model="gpt-3.5-turbo", api_key="YOUR_OPENAI_API_KEY")
+llm = ChatOpenAI(model="gpt-3.5-turbo", api_key=openai_api_key)
 
-# Create the agent executor
-agent_executor = AgentExecutor(llm=llm, tools=tools, prompt_template=prompt_template)
+agent = initialize_agent(
+    llm=llm,
+    tools=tools,
+    prompt=prompt_template
+)
 
 st.title("LLM String Operations Agent")
 openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
