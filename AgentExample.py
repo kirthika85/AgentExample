@@ -1,4 +1,7 @@
 import streamlit as st
+from langchain.agents import initialize_agent
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, PromptTemplate
 
 st.title("LLM String Operations Agent")
 openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
@@ -20,6 +23,38 @@ tools = {
     "length": get_length
 }
 
+# Initialize the OpenAI LLM
+llm = ChatOpenAI(api_key=openai_api_key, temperature=0.4, model='gpt-3.5-turbo-1106')
+
+# Define the human message prompt template
+human_message_template = HumanMessagePromptTemplate(
+    prompt=PromptTemplate(
+        input_variables=["input"],
+        template="""
+        You are a helpful assistant that can perform various string operations.
+        You have access to the following tools:
+        - reverse: Reverses the input string.
+        - uppercase: Converts the input string to uppercase.
+        - length: Returns the length of the input string.
+        The user will provide you with a command, and you will use the appropriate tool to perform the operation.
+        Command: {{input}}
+        """
+    )
+)
+
+# Create the chat prompt template
+chat_prompt_template = ChatPromptTemplate(
+    input_variables=["input"],
+    messages=[human_message_template]
+)
+
+# Initialize the agent with the tools and the prompt template
+agent = initialize_agent(
+    llm=llm,
+    tools=tools,
+    prompt=chat_prompt_template
+)
+
 # Check if API key is valid
 if not openai_api_key.startswith('sk-'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
@@ -29,27 +64,14 @@ else:
         if user_input:
             with st.spinner("Processing..."):
                 try:
-                    # Parse the command and text from the user input
-                    parts = user_input.split(maxsplit=1)
-                    if len(parts) < 2:
-                        st.error("Please enter both a command and a string.")
-                        raise ValueError("Incomplete input")
-
-                    command = parts[0]
-                    text = parts[1]
-
-                    if command not in tools:
-                        st.error("Invalid command. Use 'reverse', 'uppercase', or 'length'.")
-                        raise ValueError("Invalid command")
-
-                    # Execute the tool directly
-                    result = tools[command](text)
+                    # Run the agent with the user input
+                    response = agent({"input": user_input})
                     
                     st.write("### Result")
-                    st.write(result)
+                    st.write(response['output'])  # Access the output from the response
 
-                except ValueError:
-                    pass  # Error already handled by st.error
+                except KeyError as e:
+                    st.error(f"An error occurred: {e}")
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
         else:
