@@ -2,7 +2,7 @@ import streamlit as st
 from langchain.tools import Tool
 from langchain.agents import initialize_agent
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, PromptTemplate
 
 
 st.title("LLM String Operations Agent")
