@@ -64,11 +64,8 @@ else:
                         prompt=chat_prompt_template
                     )
 
-                    # Format the input data correctly
-                    input_data = {"input": user_input}
-
-                    # Run the agent with the formatted input data
-                    response = agent(input_data)
+                    # Run the agent with the user input
+                    response = agent(user_input)
                     
                     st.write("### Result")
                     st.write(response['output'])  # Display the output from the response
