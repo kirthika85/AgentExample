@@ -41,8 +41,8 @@ human_message_template = HumanMessagePromptTemplate(
         Text: {{text}}
         """
     )
-    st.write(prompt)
-)
+   )
+  st.write(prompt)
 
 # Create the chat prompt template
 chat_prompt_template = ChatPromptTemplate(
