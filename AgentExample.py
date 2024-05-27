@@ -1,5 +1,6 @@
 import streamlit as st
-from langchain.agents import Tool, AgentExecutor
+from langchain.tools import Tool
+from langchain.agents import AgentExecutor
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 
