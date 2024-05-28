@@ -27,7 +27,7 @@ tools = [
 # Define the human message prompt template
 human_message_template = HumanMessagePromptTemplate(
     prompt=PromptTemplate(
-        input_variables=["input"],
+        input_variables=["command", "text"],
         template="""
         You are a helpful assistant that can perform various string operations.
         You have access to the following tools:
@@ -37,14 +37,15 @@ human_message_template = HumanMessagePromptTemplate(
         
         The user will provide you with a command and a string, and you will use the appropriate tool to perform the operation.
         
-        Command: {{input}}
+        Command: {command}
+        Text: {text}
         """
     )
 )
 
 # Create the chat prompt template
 chat_prompt_template = ChatPromptTemplate(
-    input_variables=["input"],
+    input_variables=["command", "text"],
     messages=[human_message_template]
 )
 
@@ -57,6 +58,19 @@ else:
         if user_input:
             with st.spinner("Processing..."):
                 try:
+                    # Parse the command and text from the user input
+                    parts = user_input.split(maxsplit=1)
+                    if len(parts) < 2:
+                        st.error("Please enter both a command and a string.")
+                        raise ValueError("Incomplete input")
+
+                    command = parts[0]
+                    text = parts[1]
+
+                    if command not in ["reverse", "uppercase", "length"]:
+                        st.error("Invalid command. Use 'reverse', 'uppercase', or 'length'.")
+                        raise ValueError("Invalid command")
+
                     # Initialize the OpenAI LLM
                     llm = ChatOpenAI(api_key=openai_api_key, temperature=0.4, model='gpt-3.5-turbo')
 
@@ -70,7 +84,7 @@ else:
                     )
 
                     # Format the input data correctly
-                    input_data = {"input": user_input}
+                    input_data = {"command": command, "text": text}
                     st.write(f"Input Data: {input_data}")
 
                     # Run the agent with the formatted input data
