@@ -27,7 +27,7 @@ tools = [
 # Define the human message prompt template
 human_message_template = HumanMessagePromptTemplate(
     prompt=PromptTemplate(
-        input_variables=["command", "text"],
+        input_variables=["input"],
         template="""
         You are a helpful assistant that can perform various string operations.
         You have access to the following tools:
@@ -37,15 +37,15 @@ human_message_template = HumanMessagePromptTemplate(
         
         The user will provide you with a command and a string, and you will use the appropriate tool to perform the operation.
         
-        Command: {command}
-        Text: {text}
+        Command: {{input.command}}
+        Text: {{input.text}}
         """
     )
 )
 
 # Create the chat prompt template
 chat_prompt_template = ChatPromptTemplate(
-    input_variables=["command", "text"],
+    input_variables=["input"],
     messages=[human_message_template]
 )
 
@@ -84,7 +84,7 @@ else:
                     )
 
                     # Format the input data correctly
-                    input_data = {"command": command, "text": text}
+                    input_data = {"input": {"command": command, "text": text}}
                     st.write(f"Input Data: {input_data}")
 
                     # Run the agent with the formatted input data
