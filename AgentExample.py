@@ -91,8 +91,10 @@ else:
                     response = agent(input_data)
                     st.write(f"Raw Response: {response}")
 
+                    # Display the output from the response
+                    output_text = response['output'] if 'output' in response else response['text']
                     st.write("### Result")
-                    st.write(response['output'])  # Display the output from the response
+                    st.write(output_text)
 
                 except ValueError as e:
                     st.error(f"ValueError: {e}")
